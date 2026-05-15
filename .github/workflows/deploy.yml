@@ -21,31 +21,12 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
           chmod 600 key.pem
 
-      - name: Deploy application on EC2
+      - name: Run deploy script on EC2
         shell: bash
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            set -e
-            cd /home/ec2-user/aws-three-tier-web-architecture-workshop
-            git pull origin main
-
-            cd application-code/app-tier
-            npm install
-            if pm2 describe index >/dev/null 2>&1; then
-              pm2 restart index
-            else
-              pm2 start index.js --name index
-            fi
-            pm2 save
-
-            cd ../web-tier
-            npm install
-            npm run build
-            sudo rm -rf /usr/share/nginx/html/*
-            sudo cp -r build/* /usr/share/nginx/html/
-            sudo nginx -t
-            sudo systemctl reload nginx
-          EOF
+          ssh -o StrictHostKeyChecking=no -i key.pem \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
+            "bash /home/ec2-user/aws-three-tier-web-architecture-workshop/scripts/deploy.sh"
 
       - name: Cleanup key
         if: always()

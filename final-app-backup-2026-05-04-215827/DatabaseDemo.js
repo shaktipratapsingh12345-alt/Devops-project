@@ -90,7 +90,7 @@ class DatabaseDemo extends Component {
   render() {
     return (
       <div>
-        <h1 id='title' style={{ paddingRight: "1em" }}>Aurora Database Demo Page</h1>
+        <h1 id='title' style={{ paddingRight: "1em" }}>Aurora Database Demo Page 1 </h1>
         <input
           style={{ float: "right", marginBottom: "1em" }}
           type="button"
